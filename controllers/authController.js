@@ -1,7 +1,9 @@
 const User = require("../models/user");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
+const { attachCookiesToResponse, createTokenUser } = require("../utils");
 
+//REGISTER A NEW USER.
 const register = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -19,7 +21,13 @@ const register = async (req, res) => {
   const role = isFirstAccount ? "admin" : "user";
 
   const user = await User.create({ name, email, password, role });
-  res.status(StatusCodes.CREATED).json({ user });
+
+  //In order to prevent sending sensitive info like passwords, we use createTokenUser so we can pass only the data we need.
+  const tokenUser = createTokenUser(user);
+
+  //add cookies to the response.
+  attachCookiesToResponse({ res, user: tokenUser });
+  res.status(StatusCodes.CREATED).json({ user: tokenUser });
 };
 
 const login = async (req, res) => {
@@ -40,11 +48,18 @@ const login = async (req, res) => {
     throw new CustomError.UnauthenticatedError("Invalid credentials provided");
   }
 
-  res.status(StatusCodes.OK).json({ user });
+  const tokenUser = createTokenUser(user);
+  attachCookiesToResponse({ res, user: tokenUser });
+
+  res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
 const logout = async (req, res) => {
-  console.log("logout");
+  res.cookie("token", "logout", {
+    httpOnly: true,
+    expiresIn: new Date(Date.now()),
+  });
+  res.status(StatusCodes.OK).json({ msg: "User Logged out successfully." });
 };
 
 module.exports = {
