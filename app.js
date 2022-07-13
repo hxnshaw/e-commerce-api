@@ -13,6 +13,7 @@ const connectDB = require("./db/connect");
 
 //Routers.
 const authRouter = require("./routes/authRoute");
+const userRouter = require("./routes/userRoute");
 
 //middleware
 const notfoundMiddleware = require("./middleware/not-found");
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use("/api/v2/auth", authRouter);
+app.use("/api/v2/users", userRouter);
 
 app.use(notfoundMiddleware);
 app.use(errorHandlerMiddleware);
