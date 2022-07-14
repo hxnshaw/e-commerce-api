@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { authenticateUser } = require("../middleware/authentication");
+const {
+  authenticateUser,
+  authorizePermissions,
+} = require("../middleware/authentication");
 
 const {
   getSingleUser,
@@ -18,6 +21,8 @@ router.route("/updateProfile").patch(authenticateUser, updateUser);
 
 router.route("/updateUserPassword").patch(authenticateUser, updateUserPassword);
 
-router.route("/:id").get(getSingleUser);
+router
+  .route("/:id")
+  .get(authenticateUser, authorizePermissions("admin"), getSingleUser);
 
 module.exports = router;
