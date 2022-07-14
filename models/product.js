@@ -36,8 +36,13 @@ const ProductSchema = new mongoose.Schema(
         message: "{VALUE} is not supported",
       },
     },
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 module.exports = mongoose.model("Product", ProductSchema);
