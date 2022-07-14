@@ -1,6 +1,8 @@
 const Product = require("../models/product");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
+const fs = require("fs");
+const cloudinary = require("cloudinary").v2;
 
 const createProduct = async (req, res) => {
   const product = await Product.create(req.body);
@@ -58,8 +60,17 @@ const deleteProduct = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Product Deleted successfully" });
 };
 
+//Upload Images Via Cloudinary.
 const uploadImage = async (req, res) => {
-  // res.send("Upload Image");
+  const result = await cloudinary.uploader.upload(
+    req.files.image.tempFilePath,
+    {
+      use_filename: true,
+      folder: "Ade E-Commerce-API",
+    }
+  );
+  fs.unlinkSync(req.files.image.tempFilePath); //Prevent Storing the images in the local storage
+  return res.status(StatusCodes.OK).json({ image: { src: result.secure_url } });
 };
 
 module.exports = {
