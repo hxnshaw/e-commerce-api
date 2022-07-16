@@ -8,4 +8,4 @@ This is the API for an e-commerce company.
 * Drop ratings and add reviews.
 # Admin(s) can do the following:
 * View all the information stored in the database (Users, Products etc)
-* view/add/edit/delete orders, users, products and reviews. 
+* view/add/edit/delete users, products and reviews. 
