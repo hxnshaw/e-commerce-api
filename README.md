@@ -1,5 +1,5 @@
 # e-commerce-api
- API for an e-commerce company. 
+
 This is the API for an e-commerce company.
 # Users can do the following:
 * Create an account, login or logout
